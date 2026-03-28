@@ -5,37 +5,28 @@ Backend course project.
 ## Stack
 
 - **FastAPI** — web framework
-- **PostgreSQL** — database (runs in Docker)
+- **PostgreSQL** — database
 - **SQLAlchemy 2.0** — async ORM
 - **Alembic** — schema migrations
 - **Pydantic Settings** — configuration
+- **Docker Compose** — runs everything
 
 ## Quick start
 
 ```bash
-# 1. Start the database
-docker compose up -d
+# 1. Copy env file and adjust if needed
+cp .env.example .env
 
-# 2. Install dependencies
-pip install -e .
+# 2. Build and start everything
+docker compose up -d --build
 
-# 3. Run Alembic migrations
-alembic upgrade head
-
-# 4. Run SQL migrations (from migrations/sql/)
-migrate-sql
-
-# 5. Start the app
-uvicorn app.main:app --reload
+# 3. App is running at http://localhost:8000
+curl http://localhost:8000/health
 ```
 
 ## Entry point
 
 `app/main.py` — creates the FastAPI application.
-
-```
-uvicorn app.main:app --reload
-```
 
 ## Project structure
 
@@ -53,8 +44,9 @@ forge-karas/
 │   ├── sql/               # Raw .sql migration files
 │   ├── env.py             # Alembic env
 │   └── script.py.mako     # Alembic template
-├── alembic.ini
+├── Dockerfile
 ├── docker-compose.yml
+├── alembic.ini
 ├── pyproject.toml
 ├── .env.example
 └── README.md
@@ -62,13 +54,7 @@ forge-karas/
 
 ## Database
 
-Postgres runs in Docker:
-
-```bash
-docker compose up -d
-```
-
-Connection string is configured via `DATABASE_URL` in `.env`.
+Postgres runs in Docker alongside the app. Connection string is configured via `DATABASE_URL` in `.env`.
 
 ## Migrations
 
@@ -76,10 +62,10 @@ Connection string is configured via `DATABASE_URL` in `.env`.
 
 ```bash
 # Create a new migration
-alembic revision --autogenerate -m "description"
+docker compose exec app alembic revision --autogenerate -m "description"
 
 # Apply all migrations
-alembic upgrade head
+docker compose exec app alembic upgrade head
 ```
 
 ### Raw SQL migrations
@@ -87,7 +73,7 @@ alembic upgrade head
 Place `.sql` files in `migrations/sql/`. They are applied in alphabetical order.
 
 ```bash
-migrate-sql
+docker compose exec app migrate-sql
 ```
 
 ## Logging
