@@ -10,7 +10,11 @@ dependencies = [
     "asyncpg>=0.30",
     "alembic>=1.14",
     "pydantic-settings>=2.7",
+    "psycopg2-binary>=2.9",
 ]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
 
 [project.scripts]
 migrate-sql = "app.migrate:run"
