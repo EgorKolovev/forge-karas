@@ -1,4 +1,18 @@
 services:
+  app:
+    build: .
+    container_name: forge-karas-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     image: postgres:16-alpine
     container_name: forge-karas-db
@@ -11,6 +25,11 @@ services:
       - "5434:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
 
 volumes:
   pgdata:
