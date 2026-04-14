@@ -1,9 +1,10 @@
+from datetime import datetime
 from typing import List
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel
 from uuid import UUID
 
-class GetCollectionsResponseSchemaMetadata(BaseModel):
+class MetadataSchema(BaseModel):
     total_count: int
     limit: int
     offset: int
@@ -15,8 +16,8 @@ class CollectionSchema(BaseModel):
     cover_image_url: str
     target_url: str
     priority: int
-    start_date: str
+    start_date: datetime
 
-class GetCollectionsResponseSchema(BaseModel):
-    metadata: GetCollectionsResponseSchemaMetadata
+class CollectionsResponseSchema(BaseModel):
+    metadata: MetadataSchema
     collections: List[CollectionSchema]

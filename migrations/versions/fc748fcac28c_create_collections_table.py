@@ -24,6 +24,8 @@ def upgrade() -> None:
     op.create_table(
         "collections",
         sa.Column("id", sa.Uuid(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
         sa.Column("title", sa.String(length=255), nullable=False),
         sa.Column("description", sa.String(length=255), nullable=False),
         sa.Column("cover_image_url", sa.String(length=255), nullable=False),
