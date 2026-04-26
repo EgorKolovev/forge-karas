@@ -1,5 +1,3 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.collections.repositories.collection_repository import CollectionRepository
 from app.collections.schemas.api_schemas import (
     CollectionsResponseSchema,
@@ -8,8 +6,8 @@ from app.collections.schemas.api_schemas import (
 )
 
 
-async def get_collections_use_case(limit: int, offset: int, session: AsyncSession) -> CollectionsResponseSchema:
-    repository = CollectionRepository(session)
+async def get_collections_use_case(limit: int, offset: int) -> CollectionsResponseSchema:
+    repository = CollectionRepository()
     collections = await repository.get_collections(limit, offset)
     items = [
         CollectionSchema.model_validate(collection, from_attributes=True)

@@ -1,4 +1,6 @@
+from contextlib import asynccontextmanager
 from datetime import datetime
+from typing import AsyncGenerator
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -16,14 +18,10 @@ class Base(DeclarativeBase):
 class BaseTimeModel(Base):
     __abstract__ = True
 
-    created_at: Mapped[datetime] = mapped_column()
-    updated_at: Mapped[datetime] = mapped_column()
+    created_at: Mapped[datetime] = mapped_column(comment="Дата и время создания записи")
+    updated_at: Mapped[datetime] = mapped_column(comment="Дата и время последнего обновления записи")
 
 class BaseIdModel(Base):
     __abstract__ = True
 
-    id: Mapped[UUID] = mapped_column(primary_key=True)
-
-async def get_session() -> AsyncSession:  # type: ignore[misc]
-    async with async_session() as session:
-        yield session
+    id: Mapped[UUID] = mapped_column(primary_key=True, comment="Первичный идентификатор записи")
